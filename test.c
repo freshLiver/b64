@@ -45,7 +45,7 @@ int main(int argc, const char *argv[]) {
         return -1;
     }
 
-    // pr("%s", obuf);
+    write(STDOUT_FILENO, obuf, osz);
 
     // do decode
     size_t dsz;
