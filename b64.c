@@ -15,10 +15,9 @@
 #define pr_d(...)
 #endif
 
-static const char B64MAP[64] =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    "abcdefghijklmnopqrstuvwxyz"
-    "0123456789+/";
+static const char B64MAP[64] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                               "abcdefghijklmnopqrstuvwxyz"
+                               "0123456789+/";
 
 static const uint8_t B64UNMAP[256] = {
     ['A'] = 0,  ['B'] = 1,  ['C'] = 2,  ['D'] = 3,  ['E'] = 4,  ['F'] = 5,
@@ -38,7 +37,7 @@ typedef union {
     uint8_t in8[4];
 } B64_t;
 
-void encode(const char* in, size_t isz, char** out, size_t* osz) {
+void encode(const char *in, size_t isz, char **out, size_t *osz) {
     int trailing = isz % 3;
     int nPad = trailing ? 3 - trailing : 0;
     size_t groups = isz / 3 + !!trailing;
@@ -47,7 +46,8 @@ void encode(const char* in, size_t isz, char** out, size_t* osz) {
     // allocate output buffer
     *osz = (isz + nPad) / 3 * 4;
     *out = calloc(1, *osz);
-    if (!*out) return;
+    if (!*out)
+        return;
 
     // convert every 3 in chars to 4 out chars
     B64_t input;
@@ -65,16 +65,18 @@ void encode(const char* in, size_t isz, char** out, size_t* osz) {
     }
 
     // may need to pad '=' to output
-    for (int iPad = 0; iPad < nPad; ++iPad) (*out)[*osz - 1 - iPad] = '=';
+    for (int iPad = 0; iPad < nPad; ++iPad)
+        (*out)[*osz - 1 - iPad] = '=';
 }
 
-void decode(const char* in, size_t isz, char** out, size_t* osz) {
+void decode(const char *in, size_t isz, char **out, size_t *osz) {
     size_t groups = isz / 4;
 
     // alloc output buffer
     *osz = isz / 4 * 3;
     *out = calloc(1, *osz);
-    if (!*out) return;
+    if (!*out)
+        return;
 
     // decode every 4 char to 3 char
     B64_t input;
@@ -94,12 +96,12 @@ void decode(const char* in, size_t isz, char** out, size_t* osz) {
     *osz -= !!(in[isz - 2] == '=');
 }
 
-int main(int argc, const char* argv[]) {
+int main(int argc, const char *argv[]) {
     int isz = atoi(argv[1]);
-    const char* ifile = argc > 2 ? argv[2] : "/dev/random";
+    const char *ifile = argc > 2 ? argv[2] : "/dev/random";
 
     // malloc buffer for
-    char* ibuf = calloc(1, isz);
+    char *ibuf = calloc(1, isz);
     if (!ibuf) {
         pr_d("failed to calloc input buffer!");
         return errno;
@@ -118,7 +120,7 @@ int main(int argc, const char* argv[]) {
 
     // do encode
     size_t osz;
-    char* obuf;
+    char *obuf;
     encode(ibuf, isz, &obuf, &osz);
     if (obuf == NULL) {
         pr_d("failed to encode data");
@@ -129,7 +131,7 @@ int main(int argc, const char* argv[]) {
 
     // do decode
     size_t dsz;
-    char* dbuf;
+    char *dbuf;
     decode(obuf, osz, &dbuf, &dsz);
     if (!dbuf) {
         pr_d("failed to decode data");
