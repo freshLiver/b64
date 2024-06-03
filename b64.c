@@ -45,8 +45,8 @@ void encode(const char *in, size_t isz, char **out, size_t *osz) {
     // convert every 3 in chars to 4 out chars
     B64_t input;
     for (size_t g = 0, io = 0, oo = 0; g < groups; ++g, io += 3, oo += 4) {
-        input.in8[0] = in[io + 2];
-        input.in8[1] = in[io + 1];
+        input.in8[0] = io + 2 >= isz ? 0 : in[io + 2];
+        input.in8[1] = io + 1 >= isz ? 0 : in[io + 1];
         input.in8[2] = in[io];
         input.in8[3] = 0;
         // in32 = ((u32)in[io] << 16) | ((u32)in[io + 1] << 8) | in[io + 2];
